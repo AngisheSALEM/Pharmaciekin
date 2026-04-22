@@ -1,0 +1,19 @@
+{
+  "name": "pharma-kin",
+  "private": true,
+  "scripts": {
+    "dev": "pnpm -r --parallel dev",
+    "build": "pnpm -r build",
+    "db:generate": "pnpm --filter database generate",
+    "db:push": "pnpm --filter database push"
+  },
+  "devDependencies": {
+    "prettier": "^3.0.0",
+    "typescript": "^5.0.0"
+  },
+  "packageManager": "pnpm@9.1.0",
+  "dependencies": {
+    "@prisma/client": "6",
+    "prisma": "6"
+  }
+}

@@ -1,0 +1,51 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Pharmacy {
+  id           String    @id @default(cuid())
+  name         String
+  address      String
+  phone        String?
+  location     Unsupported("geometry(Point, 4326)")?
+  latitude     Float
+  longitude    Float
+  is24h        Boolean   @default(false)
+  isOnDuty     Boolean   @default(false)
+  updatedAt    DateTime  @updatedAt
+  createdAt    DateTime  @default(now())
+  schedules    Schedule[]
+  reports      Report[]
+}
+
+model Schedule {
+  id          String   @id @default(cuid())
+  pharmacyId  String
+  pharmacy    Pharmacy @relation(fields: [pharmacyId], references: [id])
+  dayOfWeek   Int      // 0-6 (Sunday-Saturday)
+  openTime    String   // HH:mm
+  closeTime   String   // HH:mm
+}
+
+model Report {
+  id          String   @id @default(cuid())
+  pharmacyId  String
+  pharmacy    Pharmacy @relation(fields: [pharmacyId], references: [id])
+  type        String   // "incorrect_hours", "out_of_stock", "closed"
+  comment     String?
+  timestamp   DateTime @default(now())
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  password      String?
+  role          String    @default("user") // "user", "pharmacist", "admin"
+  pharmacyId    String?   // If the user is a pharmacist
+}
